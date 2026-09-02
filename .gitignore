@@ -1,0 +1,35 @@
+# Environment files — never commit API keys
+.env
+.env.*
+!.env.example
+*.env
+
+# OAuth tokens, session credentials, service account keys — never commit
+config/credentials.json
+token.json
+*_token.json
+*.token.json
+
+# Generated per-client data — real client briefs, brand assets, and
+# reporting output do not belong in a public template repo
+clients/*/
+!clients/example-brand/
+!clients/example-brand/**
+
+# Regenerated context files — not source artifacts
+prescott/session-context/
+
+# Rendered output — rebuilt on each run, not source artifacts
+prescott/pitch-decks/positioning.pdf
+prescott/pitch-decks/_render_tmp.html
+*_screenshot.png
+*_screenshot.jpg
+
+# System files
+.DS_Store
+__pycache__/
+*.pyc
+*.pyo
+
+# Office temp files
+~$*

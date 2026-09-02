@@ -1,0 +1,366 @@
+{#
+  email_body.html.j2 — Multi-client email body template
+  -------------------------------------------------------
+  EMAIL HTML RULES (non-negotiable):
+  - No <!DOCTYPE>, <html>, <head>, <title>, or <meta> tags — email clients strip them.
+  - All CSS is inline via style="" attributes. No exceptions.
+  - The <style> block below is ONLY for mobile media queries — they cannot be inlined.
+    It lives at the top of the output (before the outer table) so some clients will read it.
+  - Structure: Hero (with CTA above fold) → max 2 body sections → closing CTA.
+    Short. Scannable. One message. One action.
+
+  Does NOT include: header (logo/top bar), footer (unsubscribe/social/nav)
+  Those are added as reusable blocks in Klaviyo / Omnisend.
+
+  Variables injected by amelia_render.py:
+    brand.accent     — e.g. #FF6900
+    brand.dark       — e.g. #222C37
+    brand.light_text — e.g. #FFFFFF
+    hero, intro, features, stats, split, lifestyle, cta_block, tiles, bottom_hero
+    icons            — dict of SVG strings keyed by icon name
+#}
+<style>
+  @media screen and (max-width: 600px) {
+    .mobile-stack  { display: block !important; width: 100% !important; box-sizing: border-box !important; }
+    .mobile-full   { width: 100% !important; }
+    .split-img     { display: none !important; }
+    .mobile-hide   { display: none !important; }
+    .mobile-pad    { padding: 24px 16px !important; }
+    .hero-headline { font-size: 26px !important; }
+    .section-headline { font-size: 20px !important; }
+    .btn-mobile    { width: 88% !important; padding: 14px 16px !important; }
+    .stat-tile     { display: block !important; width: 100% !important; border-right: none !important; border-bottom: 1px solid rgba(255,255,255,0.15) !important; }
+  }
+</style>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0; background-color:#f4f4f4;">
+<tr><td align="center" style="padding:0;">
+
+<!-- OUTER WRAPPER — max 600px -->
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; width:100%; margin:0 auto;">
+
+
+<!-- ══════════════════════════════════════════════════
+     1. HERO — CTA always present and above the fold
+════════════════════════════════════════════════════ -->
+<tr><td>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+  style="background-image:url('{{ hero.image_url }}'); background-size:cover; background-position:center; background-color:{{ brand.dark }};">
+<tr><td style="background-color:rgba(18,26,36,{{ hero.overlay_opacity | default(0.78) }});">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr><td align="center" class="mobile-pad" style="padding:52px 40px 48px 40px;">
+    {% if hero.eyebrow is defined and hero.eyebrow %}
+    <p style="margin:0 0 10px 0; font-family:Arial,Helvetica,sans-serif; font-size:11px; font-weight:bold; letter-spacing:2px; text-transform:uppercase; color:{{ brand.accent }};">{{ hero.eyebrow }}</p>
+    {% endif %}
+    <h1 class="hero-headline" style="margin:0 0 14px 0; font-family:Arial,Helvetica,sans-serif; font-size:32px; font-weight:bold; color:#ffffff; line-height:1.2; letter-spacing:-0.5px;">{{ hero.headline }}</h1>
+    {% if hero.subheadline is defined and hero.subheadline %}
+    <p style="margin:0 0 24px 0; font-family:Arial,Helvetica,sans-serif; font-size:15px; color:rgba(255,255,255,0.85); line-height:1.5;">{{ hero.subheadline }}</p>
+    {% endif %}
+    <a href="{{ hero.cta_url }}" style="display:inline-block; background-color:{{ brand.accent }}; color:#ffffff; font-family:Arial,Helvetica,sans-serif; font-size:15px; font-weight:bold; text-decoration:none; padding:14px 32px; border-radius:3px; letter-spacing:0.5px;">{{ hero.cta_text }}</a>
+  </td></tr>
+  </table>
+</td></tr>
+</table>
+</td></tr>
+
+
+<!-- ══════════════════════════════════════════════════
+     2. INTRO COPY — 1 short paragraph, no more
+     Optional: intro.bg_image + intro.overlay_opacity
+     for a photo background with dark overlay.
+     Defaults to plain white if bg_image not set.
+════════════════════════════════════════════════════ -->
+<tr><td>
+{% if intro.bg_image is defined and intro.bg_image %}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+  style="background-image:url('{{ intro.bg_image }}'); background-size:cover; background-position:center; background-color:{{ brand.dark }};">
+<tr><td style="background-color:rgba(0,0,0,{{ intro.overlay_opacity | default(0.62) }});">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr><td class="mobile-pad" style="padding:32px 40px;">
+    <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:15px; color:#ffffff; line-height:1.65;">{{ intro.p1 }}</p>
+  </td></tr>
+  </table>
+</td></tr>
+</table>
+{% else %}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#ffffff;">
+<tr><td class="mobile-pad" style="padding:28px 40px 8px 40px;">
+  <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:15px; color:#333333; line-height:1.65;">{{ intro.p1 }}</p>
+</td></tr>
+{% if intro.p2 is defined and intro.p2 %}
+<tr><td class="mobile-pad" style="padding:0 40px 28px 40px;">
+  <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:15px; color:#333333; line-height:1.65;">{{ intro.p2 }}</p>
+</td></tr>
+{% else %}
+<tr><td style="padding:0 0 20px 0;"></td></tr>
+{% endif %}
+</table>
+{% endif %}{# /intro bg_image #}
+</td></tr>
+
+
+<!-- ══════════════════════════════════════════════════
+     3. FEATURE SECTION (optional)
+════════════════════════════════════════════════════ -->
+{% if features is defined %}
+
+{% if features.style == "icon_cards" %}
+<tr><td>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f9f9f9;">
+<tr><td style="padding:8px 0 0 0;"></td></tr>
+{% for item in features.items %}
+<tr><td class="mobile-pad" style="padding:0 32px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+    style="border-left:4px solid {{ brand.accent }}; margin-bottom:4px;">
+  <tr>
+    <td width="52" valign="top" style="padding:16px 14px 16px 18px;">
+      {{ icons[item.icon] | default(icons['shield']) }}
+    </td>
+    <td valign="top" style="padding:16px 20px 16px 0;">
+      <p style="margin:0 0 3px 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; font-weight:bold; color:{{ brand.dark }};">{{ item.title }}</p>
+      <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#555555; line-height:1.55;">{{ item.body }}</p>
+    </td>
+  </tr>
+  </table>
+</td></tr>
+{% if not loop.last %}
+<tr><td style="padding:0 32px;"><hr style="border:none; border-top:1px solid #eeeeee; margin:0;"></td></tr>
+{% endif %}
+{% endfor %}
+<tr><td style="padding:0 0 8px 0;"></td></tr>
+</table>
+</td></tr>
+
+{% elif features.style == "offer_badge" %}
+<tr><td>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:{{ brand.dark }};">
+<tr><td align="center" class="mobile-pad" style="padding:40px 40px;">
+  {% if features.badge_text is defined and features.badge_text %}
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto 16px auto;">
+  <tr><td style="background-color:{{ brand.accent }}; padding:6px 20px; border-radius:3px;">
+    <span style="font-family:Arial,Helvetica,sans-serif; font-size:12px; font-weight:bold; color:#ffffff; letter-spacing:1.5px; text-transform:uppercase;">{{ features.badge_text }}</span>
+  </td></tr>
+  </table>
+  {% endif %}
+  <h2 class="section-headline" style="margin:0 0 12px 0; font-family:Arial,Helvetica,sans-serif; font-size:24px; font-weight:bold; color:#ffffff; line-height:1.2;">{{ features.offer_headline }}</h2>
+  <p style="margin:0 {% if features.cta_text is defined and features.cta_text %}0 24px 0{% endif %}; font-family:Arial,Helvetica,sans-serif; font-size:14px; color:rgba(255,255,255,0.8); line-height:1.55; max-width:420px; margin-left:auto; margin-right:auto;">{{ features.offer_body }}</p>
+  {% if features.cta_text is defined and features.cta_text %}
+  <a href="{{ features.cta_url }}" class="btn-mobile" style="display:inline-block; background-color:{{ brand.accent }}; color:#ffffff; font-family:Arial,Helvetica,sans-serif; font-size:15px; font-weight:bold; text-decoration:none; padding:14px 32px; border-radius:3px;">{{ features.cta_text }}</a>
+  {% endif %}
+</td></tr>
+</table>
+</td></tr>
+{% endif %}
+
+{% endif %}{# /features #}
+
+
+<!-- ══════════════════════════════════════════════════
+     4. STATS / PROOF STRIP (optional)
+════════════════════════════════════════════════════ -->
+{% if stats is defined and stats.include %}
+<tr><td>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:{{ brand.dark }};">
+<tr><td style="padding:32px 24px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+    style="border:1px solid rgba(255,255,255,0.12); border-radius:3px; overflow:hidden;">
+  <tr>
+  {% for item in stats.items %}
+    <td class="stat-tile mobile-stack" width="{{ (100 / stats.items|length)|int }}%" align="center"
+      style="padding:22px 12px; {% if not loop.last %}border-right:1px solid rgba(255,255,255,0.12);{% endif %} vertical-align:middle;">
+      {% if stats.style == "testimonials" %}
+        <p style="margin:0 0 6px 0; font-family:Arial,Helvetica,sans-serif; font-size:13px; font-style:italic; color:rgba(255,255,255,0.85); line-height:1.5;">&ldquo;{{ item.value }}&rdquo;</p>
+        <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:11px; font-weight:bold; color:{{ brand.accent }}; letter-spacing:1px; text-transform:uppercase;">{{ item.label }}</p>
+      {% else %}
+        <p style="margin:0 0 5px 0; font-family:Arial,Helvetica,sans-serif; font-size:22px; font-weight:bold; color:{{ brand.accent }}; line-height:1;">{{ item.value }}</p>
+        <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:11px; color:rgba(255,255,255,0.7); letter-spacing:0.5px; text-transform:uppercase;">{{ item.label }}</p>
+      {% endif %}
+    </td>
+  {% endfor %}
+  </tr>
+  </table>
+</td></tr>
+</table>
+</td></tr>
+{% endif %}{# /stats #}
+
+
+<!-- ══════════════════════════════════════════════════
+     5. SPLIT — photo left, copy right (optional)
+════════════════════════════════════════════════════ -->
+{% if split is defined and split.include %}
+<tr><td>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#ffffff;">
+<tr>
+  <td class="split-img mobile-hide" width="50%" valign="middle"
+    style="background-image:url('{{ split.image_url }}'); background-size:cover; background-position:center; min-height:260px;">
+  </td>
+  <td class="mobile-stack" width="50%" valign="middle" style="padding:32px 28px; box-sizing:border-box;">
+    {% if split.headline is defined and split.headline %}
+    <h2 style="margin:0 0 16px 0; font-family:Arial,Helvetica,sans-serif; font-size:18px; font-weight:bold; color:{{ brand.dark }}; line-height:1.3;">{{ split.headline }}</h2>
+    {% endif %}
+    {% if split.style == "checklist" or split.style is not defined %}
+    {% for item in split.items %}
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:10px;">
+    <tr>
+      <td width="18" valign="top" style="padding-top:1px;">
+        <span style="font-family:Arial,Helvetica,sans-serif; font-size:14px; font-weight:bold; color:{{ brand.accent }};">&#10003;</span>
+      </td>
+      <td style="padding-left:8px; font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#444444; line-height:1.5;">{{ item }}</td>
+    </tr>
+    </table>
+    {% endfor %}
+    {% else %}
+    {% for item in split.items %}
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:10px;">
+    <tr>
+      <td width="10" valign="top" style="padding-top:5px;">
+        <span style="display:inline-block; width:5px; height:5px; background-color:{{ brand.accent }}; border-radius:50%;"></span>
+      </td>
+      <td style="padding-left:10px; font-family:Arial,Helvetica,sans-serif; font-size:13px; color:#444444; line-height:1.5;">{{ item }}</td>
+    </tr>
+    </table>
+    {% endfor %}
+    {% endif %}
+  </td>
+</tr>
+</table>
+</td></tr>
+{% endif %}{# /split #}
+
+
+<!-- ══════════════════════════════════════════════════
+     6. LIFESTYLE DIVIDER (optional)
+════════════════════════════════════════════════════ -->
+{% if lifestyle is defined and lifestyle.include %}
+<tr><td>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+  style="background-image:url('{{ lifestyle.image_url }}'); background-size:cover; background-position:center; background-color:{{ brand.dark }};">
+<tr><td style="background-color:rgba(18,26,36,{{ lifestyle.overlay_opacity | default(0.72) }});">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr><td align="center" class="mobile-pad" style="padding:44px 48px;">
+    <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:20px; font-weight:bold; color:#ffffff; line-height:1.4; letter-spacing:-0.3px;">{{ lifestyle.text }}</p>
+  </td></tr>
+  </table>
+</td></tr>
+</table>
+</td></tr>
+{% endif %}{# /lifestyle #}
+
+
+<!-- ══════════════════════════════════════════════════
+     7. PRIMARY CTA BLOCK
+════════════════════════════════════════════════════ -->
+<tr><td>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:{{ brand.dark }};">
+<tr><td align="center" class="mobile-pad" style="padding:44px 40px;">
+  <h2 class="section-headline" style="margin:0 0 18px 0; font-family:Arial,Helvetica,sans-serif; font-size:22px; font-weight:bold; color:#ffffff; line-height:1.2; max-width:420px; margin-left:auto; margin-right:auto;">{{ cta_block.headline }}</h2>
+  <a href="{{ cta_block.button_url }}" class="btn-mobile" style="display:inline-block; background-color:{{ brand.accent }}; color:#ffffff; font-family:Arial,Helvetica,sans-serif; font-size:15px; font-weight:bold; text-decoration:none; padding:14px 36px; border-radius:3px; letter-spacing:0.5px;">{{ cta_block.button_text }}</a>
+</td></tr>
+</table>
+</td></tr>
+
+
+<!-- ══════════════════════════════════════════════════
+     8. PRODUCT TILE GRID — 3-up or 2×2 (requires ≥2 tiles)
+════════════════════════════════════════════════════ -->
+{% if tiles is defined and tiles|length >= 2 %}
+<tr><td style="background-color:#f9f9f9; padding:28px 12px 20px 12px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr><td align="center" style="padding:0 0 16px 0;">
+    <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:10px; font-weight:bold; letter-spacing:2.5px; text-transform:uppercase; color:{{ brand.accent }};">SHOP THE COLLECTION</p>
+  </td></tr>
+  </table>
+
+  {% if tiles|length == 3 %}
+  <!-- 3-COLUMN SINGLE ROW -->
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr>
+  {% for tile in tiles %}
+  <td width="33%" valign="top" style="padding:{{ '0 5px 0 0' if loop.first else ('0 0 0 5px' if loop.last else '0 3px 0 3px') }};">
+    <a href="{{ tile.url }}" style="text-decoration:none; display:block;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:{{ brand.dark }};">
+      <tr><td style="padding:0; line-height:0;">
+        <img src="{{ tile.image_url }}" alt="{{ tile.label }}" width="100%"
+          style="display:block; width:100%; height:160px; object-fit:cover;">
+      </td></tr>
+      <tr><td align="center" style="padding:10px 6px 12px 6px; background-color:{{ brand.dark }};">
+        <span style="font-family:Arial,Helvetica,sans-serif; font-size:10px; font-weight:bold; color:#ffffff; letter-spacing:0.5px; text-transform:uppercase; line-height:1.4;">{{ tile.label }}</span>
+      </td></tr>
+      </table>
+    </a>
+  </td>
+  {% endfor %}
+  </tr>
+  </table>
+
+  {% else %}
+  <!-- 2×2 GRID for 2 or 4 tiles -->
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr>
+  {% for tile in tiles[:2] %}
+  <td width="50%" style="padding:{{ '0 5px 10px 0' if loop.first else '0 0 10px 5px' }};">
+    <a href="{{ tile.url }}" style="text-decoration:none; display:block;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:{{ brand.dark }};">
+      <tr><td style="padding:0; line-height:0;">
+        <img src="{{ tile.image_url }}" alt="{{ tile.label }}" width="100%"
+          style="display:block; width:100%; height:140px; object-fit:cover;">
+      </td></tr>
+      <tr><td align="center" style="padding:10px 8px; background-color:{{ brand.dark }};">
+        <span style="font-family:Arial,Helvetica,sans-serif; font-size:11px; font-weight:bold; color:#ffffff; letter-spacing:0.5px; text-transform:uppercase;">{{ tile.label }}</span>
+      </td></tr>
+      </table>
+    </a>
+  </td>
+  {% endfor %}
+  </tr>
+  {% if tiles|length > 2 %}
+  <tr>
+  {% for tile in tiles[2:4] %}
+  <td width="50%" style="padding:{{ '0 5px 0 0' if loop.first else '0 0 0 5px' }};">
+    <a href="{{ tile.url }}" style="text-decoration:none; display:block;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:{{ brand.dark }};">
+      <tr><td style="padding:0; line-height:0;">
+        <img src="{{ tile.image_url }}" alt="{{ tile.label }}" width="100%"
+          style="display:block; width:100%; height:140px; object-fit:cover;">
+      </td></tr>
+      <tr><td align="center" style="padding:10px 8px; background-color:{{ brand.dark }};">
+        <span style="font-family:Arial,Helvetica,sans-serif; font-size:11px; font-weight:bold; color:#ffffff; letter-spacing:0.5px; text-transform:uppercase;">{{ tile.label }}</span>
+      </td></tr>
+      </table>
+    </a>
+  </td>
+  {% endfor %}
+  </tr>
+  {% endif %}
+  </table>
+  {% endif %}
+</td></tr>
+{% endif %}{# /tiles #}
+
+
+<!-- ══════════════════════════════════════════════════
+     9. BOTTOM HERO — second conversion moment (optional)
+════════════════════════════════════════════════════ -->
+{% if bottom_hero is defined and bottom_hero.cta_url is defined %}
+<tr><td>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+  style="background-image:url('{{ bottom_hero.image_url }}'); background-size:cover; background-position:center; background-color:{{ brand.dark }};">
+<tr><td style="background-color:rgba(18,26,36,0.82);">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr><td align="center" class="mobile-pad" style="padding:44px 40px;">
+    {% if bottom_hero.headline is defined and bottom_hero.headline %}
+    <h2 style="margin:0 0 18px 0; font-family:Arial,Helvetica,sans-serif; font-size:22px; font-weight:bold; color:#ffffff; line-height:1.3; max-width:400px; margin-left:auto; margin-right:auto;">{{ bottom_hero.headline }}</h2>
+    {% endif %}
+    <a href="{{ bottom_hero.cta_url }}" class="btn-mobile" style="display:inline-block; background-color:{{ brand.accent }}; color:#ffffff; font-family:Arial,Helvetica,sans-serif; font-size:15px; font-weight:bold; text-decoration:none; padding:14px 36px; border-radius:3px;">{{ bottom_hero.cta_text }}</a>
+  </td></tr>
+  </table>
+</td></tr>
+</table>
+</td></tr>
+{% endif %}{# /bottom_hero #}
+
+
+</table>{# /outer wrapper #}
+</td></tr>
+</table>{# /body wrapper #}

@@ -1,0 +1,19 @@
+{
+  "_meta": {
+    "note": "Populate this with real image URLs from the client's own site/CDN. Amelia reads this before scraping anything live."
+  },
+  "hero_banners": [
+    {
+      "id": "hero-01",
+      "url": "https://example-brand.com/images/hero-banner.jpg",
+      "use_cases": ["welcome", "promo", "seasonal"]
+    }
+  ],
+  "category_tiles": [
+    {
+      "id": "category-1",
+      "url": "https://example-brand.com/images/category-1.jpg",
+      "use_cases": ["category_grid", "abandoned_checkout"]
+    }
+  ]
+}
