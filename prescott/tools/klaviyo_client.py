@@ -35,7 +35,7 @@ KLAVIYO_BASE_URL   = "https://a.klaviyo.com/api"
 KLAVIYO_REVISION   = "2025-01-15"
 
 # Folder slug overrides for clients whose folder name differs from their sheet
-# name (e.g. "Impact Gel" -> "impactgel"). Add your own as needed.
+# name (e.g. "Acme Co" -> "acmeco"). Add your own as needed.
 _FOLDER_SLUGS: dict[str, str] = {}
 
 # Session-scoped key cache — avoids re-reading the sheet on every call
