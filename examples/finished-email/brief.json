@@ -1,0 +1,87 @@
+{
+  "_schema_version": "1.0",
+  "_note": "This is prescott/briefs/example-brand/AbandonedCheckout_Email1.json with the placeholder copy filled in and real placeholder image URLs swapped in, purely so this brief can render standalone with no client account. It exists to show what the brief -> render pipeline actually produces. See examples/finished-email/README.md.",
+  "_flow_context": {
+    "flow_name":   "NX - Abandoned Checkout Reminder",
+    "flow_id":     "REPLACE_WITH_YOUR_FLOW_ID",
+    "email_slot":  "Email 1 of 3",
+    "timing":      "2 hours after Checkout Started",
+    "action_id":   "REPLACE_WITH_YOUR_ACTION_ID",
+    "message_id":  "REPLACE_WITH_YOUR_MESSAGE_ID",
+    "offer":       "none — do not mention a discount in this email"
+  },
+  "_instructions": {
+    "copy_rules": "No em dashes in any copy. Short sentences. Warm, helpful tone, not pushy. This email arrives 2 hours after checkout. The reader just forgot or got interrupted. Meet them there. No urgency language, no pressure.",
+    "design_notes": "Keep this email lean. Omit stats, split section, lifestyle divider, and bottom hero. Hero + intro + CTA block + category tiles is all this needs. It should feel personal and lightweight compared to a campaign email."
+  },
+
+  "campaign": {
+    "client":        "example-brand",
+    "name":          "AbandonedCheckout_Email1",
+    "send_date":     "triggered — 2h after Checkout Started",
+    "campaign_type": "Abandoned Checkout Flow",
+    "segment":       "Profiles who started checkout but have not placed an order",
+    "subject_line":  "You left your order unfinished",
+    "preheader":     "Your cart is still saved. Pick up right where you left off.",
+    "offer":         "none"
+  },
+
+  "design": {
+
+    "hero": {
+      "image_url":       "https://placehold.co/1200x600/222C37/FFFFFF?text=Hero+Image",
+      "overlay_opacity": 0.72,
+      "eyebrow":         "",
+      "headline":        "Your Order Is Still Waiting",
+      "subheadline":     "You were so close. Pick up right where you left off.",
+      "cta_text":        "Complete My Order",
+      "cta_url":         "https://example-brand.com/cart"
+    },
+
+    "intro": {
+      "p1": "Something must have come up. No worries. Your cart is still saved and ready when you are.",
+      "p2": "Every order ships with our 90-day fit guarantee, so there is no risk in finishing this one."
+    },
+
+    "features": {
+      "style": "icon_cards",
+      "include": false
+    },
+
+    "stats": {
+      "include": false
+    },
+
+    "split": {
+      "include": false
+    },
+
+    "lifestyle": {
+      "include": false
+    },
+
+    "cta_block": {
+      "headline":    "Your cart is saved. Finish your order in seconds.",
+      "button_text": "Complete My Order",
+      "button_url":  "https://example-brand.com/cart"
+    },
+
+    "tiles": [
+      {
+        "image_url": "https://placehold.co/560x420/FF6900/FFFFFF?text=Category+One",
+        "label": "Category One",
+        "url":   "https://example-brand.com/category-one"
+      },
+      {
+        "image_url": "https://placehold.co/560x420/FF6900/FFFFFF?text=Category+Two",
+        "label": "Category Two",
+        "url":   "https://example-brand.com/category-two"
+      }
+    ],
+
+    "bottom_hero": {
+      "include": false
+    }
+
+  }
+}

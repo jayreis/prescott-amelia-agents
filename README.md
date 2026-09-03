@@ -19,6 +19,21 @@ build on it, I'd love to hear about it.
 
 — Jason Reis, [jasonareis.com](https://jasonareis.com)
 
+**New to email marketing, or new to how this repo is put together?** Read
+`GLOSSARY.md` and `HOW_IT_WORKS.md` first — the rest of this repo (especially
+the playbook and the agent identity files) uses a lot of terms and
+architectural decisions without re-explaining them.
+
+---
+
+## See it work first
+
+You don't need any accounts connected to see what this pipeline actually
+produces. `examples/finished-email/` has a real brief run through the real
+`amelia_render.py` script — the finished HTML and a screenshot of it, no
+Klaviyo/Asana/Google Sheets required. Start there if you want to see the
+output before you set up the input.
+
 ---
 
 ## What's in here
@@ -28,6 +43,8 @@ prescott/           Prescott's identity, rules, tools, and reference docs
 amelia/              Amelia's identity and design/copy standards
 shared/              Config + auth utilities both agents depend on
 clients/             Per-client data — only example-brand/ is real (a schema reference)
+examples/            Finished output from the pipeline, no accounts required
+tests/               Automated checks for the mechanical copy rules
 ```
 
 - `prescott/CLAUDE.md` / `amelia/CLAUDE.md` — each agent's full identity, voice, and standing rules
@@ -35,6 +52,10 @@ clients/             Per-client data — only example-brand/ is real (a schema r
 - `prescott/playbooks/Lifecycle Revenue Playbook v3.md` — the strategic framework Prescott reasons from
 - `prescott/sops/` — how the human+AI workflow is governed (approval gates, what AI is/isn't authorized to do on its own)
 - `shared/universal_rules.md` — copy rules both agents follow (no em dashes, no emoji, no invented facts, etc.)
+- `examples/finished-email/` — a real brief through the real render script, output included
+- `tests/test_copy_rules.py` — automated check for `shared/universal_rules.md`'s mechanical rules (em dashes, emoji, banned words, lorem ipsum) against any rendered email
+- `GLOSSARY.md` — email marketing and repo-specific terms, for anyone newer to the field
+- `HOW_IT_WORKS.md` — why the system is architected the way it is (two agents, JSON handoff, two approval gates), not just how to run it
 
 ## Prerequisites
 
@@ -130,6 +151,22 @@ decisions the AI makes on its own vs. which ones always come back to you —
 nothing sends to a client without two rounds of human approval (Gate 1:
 calendar direction, Gate 2: the individual rendered email).
 
+## Quality checks
+
+`tests/test_copy_rules.py` scans a rendered email for the mechanical rules in
+`shared/universal_rules.md` — em dashes, emoji, banned marketing words,
+leftover lorem ipsum. Run it against the checked-in example or your own
+output:
+
+```bash
+python3 -m unittest tests/test_copy_rules.py -v
+python3 tests/test_copy_rules.py clients/your-client/campaigns/Email_Whatever.html
+```
+
+It's a first pass, not a replacement for Gate 2 human review — it can't catch
+an off-brand tone or an invented fact, only the rules that are actually
+mechanical.
+
 ## What's *not* included
 
 This repo ships the reusable engine — API clients, the HTML renderer, the
@@ -139,6 +176,12 @@ roster (per-client Google Sheet dashboard rebuilds with custom charts) —
 those are wired to one specific sheet layout per client and wouldn't be
 useful to you as-is. The `prescott/tools/ops_logger.py` module shows the
 pattern if you want to build your own.
+
+## Contributing
+
+See `CONTRIBUTING.md` for what kinds of PRs are a good fit (tooling fixes,
+new reference material, test coverage) versus what isn't (rewriting the
+agents' voice, client-specific logic — fork it instead).
 
 ## License
 

@@ -53,4 +53,4 @@ Use the Lifecycle Playbook's brand maturity framework to place them, based on wh
 - **$5-30M:** flows exist but gaps in behavioral segmentation, promo-heavy — pitch segmentation architecture + value-tier work.
 - **$50M+:** likely already has an agency — pitch needs to be sharper and more specific to win the audit call at all.
 
-This tier estimate drives which engagement pitch you use on the call (see `cold_outreach_email_sequence.md`, Call Script section).
+This tier estimate drives which engagement pitch you use on the call.
